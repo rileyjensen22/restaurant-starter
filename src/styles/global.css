@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/fraunces';
+
+/* Brand colors come from src/config/business.ts via CSS variables set on <html>. */
+@theme inline {
+  --color-brand: var(--brand-primary);
+  --color-brand-contrast: var(--brand-primary-contrast);
+  --color-accent: var(--brand-accent);
+  --color-ink: var(--brand-dark);
+  --color-cream: var(--brand-light);
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+  @apply bg-cream font-sans text-ink antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+  @apply font-display tracking-tight;
+  }
+}
+
+/* Reusable component classes (Tailwind v4 custom utilities). */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+}
+
+@utility btn-primary {
+  @apply btn bg-brand text-brand-contrast shadow-lg shadow-black/10 hover:brightness-110;
+}
+
+@utility btn-ghost {
+  @apply btn border border-white/40 bg-white/10 text-white backdrop-blur hover:bg-white/20;
+}
+
+@utility btn-outline {
+  @apply btn border border-ink/15 bg-white text-ink hover:border-brand hover:text-brand;
+}
+
+@utility section {
+  @apply mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24;
+}
+
+@utility eyebrow {
+  @apply text-xs font-semibold tracking-[0.2em] text-brand uppercase;
+}
+
+@utility section-title {
+  @apply mt-2 text-3xl font-semibold text-ink sm:text-4xl;
+}
+
+@utility input {
+  @apply w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-base text-ink placeholder:text-ink/40 focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none;
+}

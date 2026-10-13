@@ -1,0 +1,41 @@
+---
+import { business } from '../config/business';
+import { telHref, directionsHref, fullAddress } from '../lib/utils';
+import Icon from './Icon.astro';
+---
+
+<section id="top" class="relative isolate overflow-hidden bg-ink text-white">
+  <img
+    src={business.hero.image}
+    alt={business.hero.alt}
+    class="absolute inset-0 -z-10 h-full w-full object-cover"
+    fetchpriority="high"
+    decoding="async"
+  />
+  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/70 to-ink/30"></div>
+
+  <div class="mx-auto flex min-h-[78svh] max-w-6xl flex-col justify-end px-5 pt-24 pb-14 sm:px-8 md:min-h-[82vh] md:pb-20">
+    <div class="flex flex-wrap gap-2 text-xs font-semibold">
+      {business.cuisine.map((c) => <span class="rounded-full bg-white/15 px-3 py-1 backdrop-blur">{c}</span>)}
+      <span class="rounded-full bg-accent px-3 py-1 text-ink">{business.priceRange}</span>
+    </div>
+
+    <h1 class="mt-5 max-w-3xl text-4xl leading-[1.05] font-semibold text-balance sm:text-6xl md:text-7xl">
+      {business.name}
+    </h1>
+    <p class="mt-5 max-w-xl text-lg text-white/85 sm:text-xl">{business.tagline}</p>
+
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <a href={telHref} class="btn-primary text-base"><Icon name="phone" /> Call {business.phone}</a>
+      <a href="#menu" class="btn-ghost text-base">View menu <Icon name="arrow" class="h-4 w-4" /></a>
+      <a href={directionsHref} target="_blank" rel="noopener" class="btn-ghost text-base">
+        <Icon name="map" /> Directions
+      </a>
+    </div>
+
+    <p class="mt-8 flex items-center gap-2 text-sm text-white/70">
+      <Icon name="map" class="h-4 w-4 shrink-0" />
+      {fullAddress}
+    </p>
+  </div>
+</section>

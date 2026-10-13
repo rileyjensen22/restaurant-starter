@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER hero artwork. Replace with a real photo (e.g. /images/hero.jpg) and update hero.image in src/config/business.ts -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b2418"/>
+      <stop offset="0.55" stop-color="#8a3d1f"/>
+      <stop offset="1" stop-color="#d98a3d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.72" cy="0.38" r="0.55">
+      <stop offset="0" stop-color="#ffd58a" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffd58a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="plate" cx="0.5" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#fff8ee"/>
+      <stop offset="0.8" stop-color="#efe2cf"/>
+      <stop offset="1" stop-color="#d9c6aa"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <g opacity="0.9">
+    <circle cx="1380" cy="430" r="250" fill="url(#plate)"/>
+    <circle cx="1380" cy="430" r="175" fill="none" stroke="#c9b08c" stroke-width="3" opacity="0.6"/>
+    <circle cx="1330" cy="400" r="70" fill="#a8432a"/>
+    <circle cx="1440" cy="470" r="55" fill="#6f8f3a"/>
+    <circle cx="1415" cy="370" r="38" fill="#e9b949"/>
+    <circle cx="1720" cy="820" r="170" fill="url(#plate)" opacity="0.85"/>
+    <circle cx="1720" cy="820" r="70" fill="#7a3b22" opacity="0.8"/>
+    <circle cx="900" cy="180" r="110" fill="url(#plate)" opacity="0.55"/>
+    <rect x="1080" y="180" width="14" height="520" rx="7" fill="#efe2cf" opacity="0.55" transform="rotate(-18 1087 440)"/>
+    <rect x="1680" y="160" width="14" height="520" rx="7" fill="#efe2cf" opacity="0.55" transform="rotate(14 1687 420)"/>
+  </g>
+  <g fill="#ffffff" opacity="0.06">
+    <circle cx="200" cy="900" r="320"/>
+    <circle cx="560" cy="120" r="180"/>
+  </g>
+</svg>

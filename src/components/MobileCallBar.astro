@@ -1,0 +1,22 @@
+---
+import { business } from '../config/business';
+import { telHref, directionsHref } from '../lib/utils';
+import Icon from './Icon.astro';
+---
+
+<!-- Sticky click-to-call bar, mobile only (hidden from md breakpoint up).
+     position:sticky (not fixed) as the last element of <body>: it pins to the bottom of the
+     screen while scrolling and settles below the footer at the end, so it never covers content. -->
+<div
+  data-call-bar
+  class="sticky bottom-0 z-50 border-t border-ink/10 bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur md:hidden"
+>
+  <div class="flex gap-3">
+    <a href={telHref} class="btn-primary flex-1 text-base" aria-label={`Call ${business.name} at ${business.phone}`}>
+      <Icon name="phone" /> Call now
+    </a>
+    <a href={directionsHref} target="_blank" rel="noopener" class="btn-outline px-4" aria-label="Get directions">
+      <Icon name="map" />
+    </a>
+  </div>
+</div>

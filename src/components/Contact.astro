@@ -1,0 +1,79 @@
+---
+import { business, FORMSPREE_PLACEHOLDER } from '../config/business';
+import { formspreeAction, formspreeConfigured, telHref, mailHref } from '../lib/utils';
+import Icon from './Icon.astro';
+---
+
+<section id="contact" class="section">
+  <div class="grid gap-10 lg:grid-cols-5 lg:gap-16">
+    <div class="lg:col-span-2">
+      <p class="eyebrow">Contact</p>
+      <h2 class="section-title">Get in touch</h2>
+      <p class="mt-4 text-ink/70">
+        Questions, large parties, or private events? Send us a note and we'll get back to you. For same-day
+        reservations, please call.
+      </p>
+      <div class="mt-6 space-y-3">
+        <a href={telHref} class="flex items-center gap-3 font-medium hover:text-brand">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 text-brand"><Icon name="phone" /></span>
+          {business.phone}
+        </a>
+        <a href={mailHref} class="flex items-center gap-3 font-medium hover:text-brand">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 text-brand"><Icon name="mail" /></span>
+          {business.email}
+        </a>
+      </div>
+    </div>
+
+    <div class="lg:col-span-3">
+      {
+        !formspreeConfigured && (
+          <div class="mb-4 rounded-2xl border border-dashed border-accent bg-accent/15 p-4 text-sm" role="note">
+            <strong>Form not connected yet.</strong> Set <code class="rounded bg-white px-1">formspreeId</code> in{' '}
+            <code class="rounded bg-white px-1">src/config/business.ts</code> (currently{' '}
+            <code class="rounded bg-white px-1">{business.formspreeId || '(empty)'}</code>) to start receiving
+            messages via Formspree. Submissions are disabled until then.
+          </div>
+        )
+      }
+
+      <form
+        action={formspreeAction}
+        method="POST"
+        class="grid gap-4 rounded-3xl border border-ink/10 bg-white p-6 shadow-sm sm:grid-cols-2 sm:p-8"
+        data-formspree-placeholder={formspreeConfigured ? undefined : FORMSPREE_PLACEHOLDER}
+      >
+        <input type="hidden" name="_subject" value={`New website message for ${business.name}`} />
+        <!-- Honeypot spam trap (Formspree ignores submissions where this is filled) -->
+        <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <label class="grid gap-1.5 text-sm font-medium">
+          Name
+          <input class="input" type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="grid gap-1.5 text-sm font-medium">
+          Email
+          <input class="input" type="email" name="email" autocomplete="email" required />
+        </label>
+        <label class="grid gap-1.5 text-sm font-medium sm:col-span-2">
+          <span>Phone <span class="font-normal text-ink/50">(optional)</span></span>
+          <input class="input" type="tel" name="phone" autocomplete="tel" />
+        </label>
+        <label class="grid gap-1.5 text-sm font-medium sm:col-span-2">
+          Message
+          <textarea class="input min-h-32" name="message" rows="4" required></textarea>
+        </label>
+        <div class="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-ink/50">We usually reply within one business day.</p>
+          <button
+            type="submit"
+            class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!formspreeConfigured}
+          >
+            Send message
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

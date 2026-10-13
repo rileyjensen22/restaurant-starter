@@ -1,0 +1,146 @@
+---
+import { business } from '../config/business';
+import { DAYS, formatRanges, directionsHref, telHref, mapEmbedSrc } from '../lib/utils';
+import Icon from './Icon.astro';
+
+// Serialized for the tiny client script that highlights today + shows open/closed.
+const hoursData = JSON.stringify({ tz: business.timezone, hours: business.hours });
+---
+
+<section id="hours" class="bg-white">
+  <div class="section grid gap-10 lg:grid-cols-2 lg:gap-16">
+    <!-- Hours -->
+    <div>
+      <p class="eyebrow">Hours</p>
+      <div class="flex flex-wrap items-center gap-3">
+        <h2 class="section-title">When we're open</h2>
+        <span
+          id="open-status"
+          class="mt-2 hidden rounded-full px-3 py-1 text-xs font-semibold"
+          aria-live="polite"></span>
+      </div>
+
+      <table class="mt-6 w-full text-left">
+        <caption class="sr-only">Opening hours</caption>
+        <tbody>
+          {
+            DAYS.map((d) => (
+              <tr data-day={d.key} class="border-b border-ink/10 last:border-0 data-[today]:bg-brand/8">
+                <th scope="row" class="py-3 pr-4 pl-3 font-medium">
+                  {d.label}
+                  <span class="today-label ml-2 hidden rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold tracking-wide text-brand-contrast uppercase">
+                    Today
+                  </span>
+                </th>
+                <td
+                  class:list={[
+                    'py-3 pr-3 text-right tabular-nums',
+                    business.hours[d.key].length ? 'text-ink/80' : 'text-ink/40',
+                  ]}
+                >
+                  {business.hours[d.key].length
+                    ? business.hours[d.key].map((r) => (
+                        <span class="block whitespace-nowrap">{formatRanges([r])}</span>
+                      ))
+                    : 'Closed'}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      {business.hoursNote && <p class="mt-4 text-sm text-ink/60">{business.hoursNote}</p>}
+    </div>
+
+    <!-- Visit / map -->
+    <div id="visit">
+      <p class="eyebrow">Visit us</p>
+      <h2 class="section-title">Find us</h2>
+
+      <div class="mt-6 overflow-hidden rounded-3xl border border-ink/10 bg-cream">
+        {
+          mapEmbedSrc ? (
+            <iframe
+              src={mapEmbedSrc}
+              title={`Map showing the location of ${business.name}`}
+              class="block aspect-[4/3] w-full border-0 sm:aspect-video"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            />
+          ) : (
+            <div class="relative flex aspect-[4/3] w-full flex-col items-center justify-center gap-3 p-6 text-center sm:aspect-video">
+              <div
+                class="absolute inset-0 opacity-60"
+                style="background-image: linear-gradient(var(--brand-dark) 1px, transparent 1px), linear-gradient(90deg, var(--brand-dark) 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(circle at center, rgba(0,0,0,.12), transparent 70%);"
+                aria-hidden="true"
+              />
+              <span class="relative flex h-12 w-12 items-center justify-center rounded-full bg-brand text-brand-contrast shadow-lg">
+                <Icon name="map" class="h-6 w-6" />
+              </span>
+              <p class="relative font-semibold">Map placeholder</p>
+              <p class="relative max-w-xs text-sm text-ink/60">
+                Add a Google Maps embed URL (or search query) in <code class="rounded bg-white px-1">src/config/business.ts</code> to show a live map here.
+              </p>
+            </div>
+          )
+        }
+      </div>
+
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="flex gap-3">
+          <Icon name="map" class="mt-0.5 h-5 w-5 shrink-0 text-brand" />
+          <address class="text-sm leading-relaxed not-italic">
+            {business.address.street}<br />
+            {`${business.address.city}, ${business.address.region} ${business.address.postalCode}`}
+          </address>
+        </div>
+        <div class="flex gap-3">
+          <Icon name="phone" class="mt-0.5 h-5 w-5 shrink-0 text-brand" />
+          <a href={telHref} class="text-sm font-medium hover:text-brand">{business.phone}</a>
+        </div>
+      </div>
+      <a href={directionsHref} target="_blank" rel="noopener" class="btn-outline mt-6">
+        Get directions <Icon name="external" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ hoursData }}>
+  (function () {
+    try {
+      var data = JSON.parse(hoursData);
+      var parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: data.tz,
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }).formatToParts(new Date());
+      var get = function (t) {
+        return (parts.find(function (p) { return p.type === t; }) || {}).value;
+      };
+      var day = String(get('weekday')).toLowerCase();
+      var now = Number(get('hour')) * 60 + Number(get('minute'));
+      var row = document.querySelector('tr[data-day="' + day + '"]');
+      if (row) {
+        row.setAttribute('data-today', '');
+        var label = row.querySelector('.today-label');
+        if (label) label.classList.remove('hidden');
+      }
+      var toMin = function (s) { var p = s.split(':'); return Number(p[0]) * 60 + Number(p[1]); };
+      var open = (data.hours[day] || []).some(function (r) {
+        var o = toMin(r.open), c = toMin(r.close);
+        if (c <= o) c += 24 * 60;
+        return now >= o && now < c;
+      });
+      var badge = document.getElementById('open-status');
+      if (badge) {
+        badge.textContent = open ? 'Open now' : 'Closed now';
+        badge.className += open ? ' bg-green-100 text-green-800' : ' bg-ink/10 text-ink/70';
+        badge.classList.remove('hidden');
+      }
+    } catch (e) {}
+  })();
+</script>

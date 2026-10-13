@@ -1,0 +1,11 @@
+---
+import { business } from '../config/business';
+---
+
+{
+  business.demoMode && (
+    <div class="bg-accent px-4 py-2 text-center text-xs font-semibold text-ink sm:text-sm" role="note">
+      Sample content: this is a demo template with fictional data, not a real business.
+    </div>
+  )
+}

@@ -1,0 +1,77 @@
+---
+import { business } from '../config/business';
+import { formatPrice } from '../lib/utils';
+---
+
+<section id="menu" class="section">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="eyebrow">Our menu</p>
+      <h2 class="section-title">What we're serving</h2>
+    </div>
+    {
+      business.demoMode && (
+        <span class="w-fit rounded-full bg-accent/30 px-3 py-1 text-xs font-semibold text-ink">
+          Sample menu: placeholder items &amp; prices
+        </span>
+      )
+    }
+  </div>
+
+  {
+    business.menu.length > 1 && (
+      <nav class="-mx-5 mt-8 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:px-0" aria-label="Menu categories">
+        {business.menu.map((cat, i) => (
+          <a
+            href={`#menu-${i}`}
+            class="shrink-0 rounded-full border border-ink/15 bg-white px-4 py-2 text-sm font-medium transition hover:border-brand hover:text-brand"
+          >
+            {cat.name}
+          </a>
+        ))}
+      </nav>
+    )
+  }
+
+  <div class="mt-10 grid gap-6 lg:grid-cols-2">
+    {
+      business.menu.map((cat, i) => (
+        <div id={`menu-${i}`} class="rounded-3xl border border-ink/10 bg-white p-6 shadow-sm sm:p-8">
+          <h3 class="text-2xl font-semibold">{cat.name}</h3>
+          {cat.description && <p class="mt-1 text-sm text-ink/60">{cat.description}</p>}
+          <ul class="mt-5 divide-y divide-ink/10">
+            {cat.items.map((item) => (
+              <li class="py-4 first:pt-0 last:pb-0">
+                <div class="flex items-baseline gap-3">
+                  <span class="font-semibold">{item.name}</span>
+                  <span class="flex-1 translate-y-[-3px] border-b border-dotted border-ink/25" aria-hidden="true" />
+                  <span class="font-semibold whitespace-nowrap text-brand">{formatPrice(item.price)}</span>
+                </div>
+                {item.description && <p class="mt-1 text-sm leading-relaxed text-ink/65">{item.description}</p>}
+                {item.tags?.length ? (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {item.tags.map((t) => (
+                      <span class="rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold tracking-wide text-ink/70 uppercase">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    business.menuPdf && (
+      <div class="mt-8 text-center">
+        <a href={business.menuPdf} class="btn-outline" target="_blank" rel="noopener">
+          Download full menu (PDF)
+        </a>
+      </div>
+    )
+  }
+</section>
